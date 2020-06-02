@@ -2,6 +2,8 @@
 
 import { ReactElement } from 'react';
 import styled from 'styled-components';
+import { AppBar } from '../components/AppBar';
+import { Container } from '@material-ui/core';
 
 type LayoutProps = {
   children?: ReactElement;
@@ -12,16 +14,26 @@ type LayoutProps = {
 
 const LayoutBase = (props: LayoutProps) => {
   const { showFooter, className, showNavigation, children } = props;
-  console.log('props', props);
   return (
-    <div className={className}>
-      {showNavigation && <div>app bar</div>}
-      {children}
+    <>
+      {showNavigation && <AppBar />}
+      <Container maxWidth="lg">{children}</Container>
+
       {showFooter && <div>footer</div>}
-    </div>
+      <style jsx global>{`
+        body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          background-color: #252525;
+        }
+      `}</style>
+    </>
   );
 };
 
 export const Layout = styled(LayoutBase)`
-  font-size: 102px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;

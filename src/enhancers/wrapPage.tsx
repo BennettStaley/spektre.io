@@ -1,9 +1,13 @@
 import React, { FunctionComponent } from 'react';
-import styled, { ThemeProvider, DefaultTheme } from 'styled-components';
-
+import {
+  ThemeProvider as StyledThemeProvider,
+  DefaultTheme,
+} from 'styled-components';
+import { ThemeProvider as MaterialThemeProvider } from '@material-ui/core/styles';
 import { Layout } from '../containers/layout';
+import { createMuiTheme } from '@material-ui/core/styles';
 
-import { theme as defaultTheme } from '../styles/theme';
+import { defaultTheme } from '../styles/theme';
 
 import { NextPageContext } from 'next';
 
@@ -17,7 +21,7 @@ type StateFunctionType<T> = (ctx: NextPageContext) => Promise<Partial<T>>;
 
 type StateOptionType<T> = Partial<T> | StateFunctionType<T> | null;
 
-interface PageOptions {
+interface PageProps {
   /**
    * AppLayout - configure the Apps Layout.
    * sets up the layout for the page.
@@ -52,23 +56,22 @@ export type PageType = FunctionComponent<{
 
 export function wrapPage(
   PageComponent: PageType,
-  pageStyle: string = ``,
-  options: PageOptions = {},
+  options: PageProps = {},
 ): FunctionComponent<any> {
-  const EnhancedPage = ({
-    theme = defaultTheme,
-    appLayout = {},
-    pageProps = {},
-  }) => {
-    const Page = styled(PageComponent)`
-      ${pageStyle}
-    `;
+  const EnhancedPage = (pageProps: PageProps) => {
+    const { theme, appLayout } = pageProps;
+    const injectedTheme = { ...defaultTheme, ...theme };
+    const MUITheme = {
+      ...createMuiTheme(injectedTheme as DefaultTheme),
+    };
     return (
-      <ThemeProvider theme={theme}>
-        <Layout {...appLayout}>
-          <Page {...pageProps} />
-        </Layout>
-      </ThemeProvider>
+      <StyledThemeProvider theme={injectedTheme}>
+        <MaterialThemeProvider theme={MUITheme}>
+          <Layout {...appLayout}>
+            <PageComponent {...pageProps} />
+          </Layout>
+        </MaterialThemeProvider>
+      </StyledThemeProvider>
     );
   };
 
@@ -82,12 +85,12 @@ export function wrapPage(
       showNavigation: true,
     };
 
-    console.log(EnhancedPage);
-
     return {
       pageProps,
       theme: {
-        ...defaultTheme,
+        // ...defaultTheme, we cant add default theme here
+        // because if we DO, it gets serialized, and all functions are stripped out
+        // having Merlin Labs flashbacks right now.
         ...(await determineState<AppLayout>(ctx, options.theme)),
       },
       appLayout: {

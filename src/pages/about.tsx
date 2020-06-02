@@ -7,7 +7,7 @@ const Title = styled.h1`
 `;
 
 const HomeBase = ({ className }: { className?: string }) => {
-  return <Title className={className}>My page</Title>;
+  return <Title className={className}>about page</Title>;
 };
 
 export default wrapPage(HomeBase, {

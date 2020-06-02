@@ -1,4 +1,7 @@
-export const theme = {
-  main: 'mediumseagreen',
-  bg: 'black',
+export const defaultTheme = {
+  palette: {
+    type: 'dark',
+    primary: { main: '#212121' },
+    secondary: { main: '#FAFAFA' },
+  },
 };
