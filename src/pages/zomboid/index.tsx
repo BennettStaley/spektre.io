@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { AsyncButton } from '../../components/AsyncButton';
 
 const makeOnClick = (url: string) => async () => {
@@ -12,7 +11,7 @@ const makeOnClick = (url: string) => async () => {
 
 const zomboid = () => {
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <AsyncButton
         label="Restart"
         workingLabel="Restarting..."
